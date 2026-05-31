@@ -1,13 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>score dashboard</title>
+    <title>Live score dashboard</title>
 </head>
 <body>
-    
+    <main class="container">
+        <section class="scoreboard" aria-labelledby="scoreboard-title">
+            <div class="scoreboard__topline">
+                <p class="live-badge">Live</p>
+                <p class="time" id="current-time">--:--:--</p>
+            </div>
+
+            <h1 id="scoreboard-title">Score dashboard</h1>
+
+            <div class="main_scoring" aria-live="polite">
+                <article class="team-panel">
+                    <h4 class="name_home" id="home-name-display">Home</h4>
+                    <h1 class="score_home" id="home-score">1</h1>
+                </article>
+
+                <h3 class="team-panel"  aria-hidden="true">:</h3>
+
+                <article class="team-panel">
+                    <h4 class="name_away" id="away-name-display">away</h4>
+                    <h1 class="score_away" id="away-score">1</h1>
+                </article>
+            </div>
+        </section>
+
+        
+    </main>
 
     <script src="app.js"></script>
 </body>

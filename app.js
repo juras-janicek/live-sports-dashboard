@@ -1,7 +1,11 @@
 // app.js - úplný základ
 
+
+
 const API_KEY = '66ec0d1e4bmsh3643c7487adb1cbp1a7cd5jsnf7e1b531f6e2';
 const API_HOST = 'volleyballapi.p.rapidapi.com';
+
+
 
 const options = {
   method: 'GET',
@@ -12,19 +16,25 @@ const options = {
   }
 };
 
-// Funkce která zavolá API a vypíše data do konzole
-async function fetchLeagues() {
+
+const endpoints = {
+  live_matches: '/api/volleyball/matches/live',
+  categories: '/api/volleyball/tournament/categories',
+  league_seasons: '/api/volleyball/unique-tournament/806/seasons',
+  league_teams_standing: '/api/volleyball/unique-tournament/806/season/78004/standings/total'
+}
+
+
+async function fetchInfo(endpoint) {
   try {
-    const response = await fetch(
-      'https://volleyballapi.p.rapidapi.com/api/volleyball/matches/live',
-      options
-    );
+    const response = await fetch(`https://${API_HOST}${endpoint}`, options);
     const data = await response.json();
-    console.log(data); // zatím jen vypiš - chceme vidět strukturu
+
+    console.log(data); 
   } catch (error) {
     console.error('Chyba:', error);
   }
 }
 
-// Spusť funkci
-fetchLeagues();
+
+fetchInfo (endpoints.league_teams_standing);
