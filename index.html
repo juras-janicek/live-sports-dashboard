@@ -8,7 +8,17 @@
 </head>
 <body>
     <main class="container">
-        <section class="scoreboard" aria-labelledby="scoreboard-title">
+
+        <nav class="navigation" >
+            <div><button onclick= ShowContent(0) >live score board</button></div>
+            <div><button onclick= ShowContent(1) >matches</button></div>
+        </nav>
+
+        <section class="matches" id="matches" aria-labelledby="scoreboard-title">
+
+        </section>
+
+        <section class="scoreboard" aria-labelledby="scoreboard-title" style="display: block">
             <div class="scoreboard__topline">
                 <p class="live-badge">Live</p>
                 <p class="time" id="current-time">--:--:--</p>
@@ -19,19 +29,18 @@
             <div class="main_scoring" aria-live="polite">
                 <article class="team-panel">
                     <h4 class="name_home" id="home-name-display">Home</h4>
-                    <h1 class="score_home" id="home-score">1</h1>
+                    <h1 class="score_home" id="home-score">0</h1>
                 </article>
 
-                <h3 class="team-panel"  aria-hidden="true">:</h3>
+                <h3 class="team-panel" id="divided" aria-hidden="true">:</h3>
 
                 <article class="team-panel">
                     <h4 class="name_away" id="away-name-display">away</h4>
-                    <h1 class="score_away" id="away-score">1</h1>
+                    <h1 class="score_away" id="away-score">0</h1>
                 </article>
             </div>
         </section>
 
-        
     </main>
 
     <script src="app.js"></script>
