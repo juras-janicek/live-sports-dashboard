@@ -37,6 +37,8 @@ async function fetchInfo(endpoint) {
         <div id="match_${event.homeTeam.gender}" class="match">
           <h4 class="legue" >${event.tournament.name}</h4>
           <h2 class="game" >${event.homeTeam.name} : ${event.awayTeam.name}</h2>
+          <div class="tome" >${formatTimestamp(event.startTimestamp)}</div>
+          <button class="start_match">watch</button>
         </div>`
     });    
 
@@ -46,8 +48,21 @@ async function fetchInfo(endpoint) {
   }
 }
 
-// add todays matches
-fetchInfo(`${endpoints.matches_by_date.url}${endpoints.matches_by_date.GetDate()}`)
+// time in CZ
+function formatTimestamp(timestamp) {
+  if (typeof timestamp !== "number") {
+    return "Neplatný čas";
+  }
+
+  return new Date(timestamp * 1000).toLocaleString("cs-CZ", {
+    timeZone: "Europe/Prague",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 // switching sides
 async function ShowContent(num){
@@ -67,4 +82,8 @@ async function ShowContent(num){
   }
     
 }
+
+
+// add todays matches
+fetchInfo(`${endpoints.matches_by_date.url}${endpoints.matches_by_date.GetDate()}`)
 
