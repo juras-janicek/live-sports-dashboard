@@ -343,14 +343,18 @@ h1 {
 }
 
 .game {
-    margin: 0;
+    margin: 14px;
     color: var(--text);
     font-size: clamp(1.25rem, 2.4vw, 2.05rem);
     line-height: 1.15;
     letter-spacing: 0;
 }
 
-.tome {
+.time {
+    display: block;
+    position: absolute;
+    top: 8px;
+    right: 25px;
     justify-self: end;
     min-width: 152px;
     padding: 10px 12px;
@@ -363,6 +367,7 @@ h1 {
     line-height: 1.2;
     text-align: center;
     white-space: nowrap;
+   
 }
 
 .start_match {

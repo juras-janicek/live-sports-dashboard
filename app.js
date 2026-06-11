@@ -37,7 +37,7 @@ async function fetchInfo(endpoint) {
         <div id="match_${event.homeTeam.gender}" class="match">
           <h4 class="legue" >${event.tournament.name}</h4>
           <h2 class="game" >${event.homeTeam.name} : ${event.awayTeam.name}</h2>
-          <div class="tome" >${formatTimestamp(event.startTimestamp)}</div>
+          <div class="time" >${formatTimestamp(event.startTimestamp)}</div>
           <button class="start_match">watch</button>
         </div>`
     });    
