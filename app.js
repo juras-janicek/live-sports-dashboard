@@ -32,22 +32,35 @@ async function fetchInfo(endpoint) {
 
     console.log(data);
 
-    data.events.forEach(event => {
-      matches.innerHTML += `
-        <div id="match_${event.homeTeam.gender}" class="match">
-          <h4 class="legue" >${event.tournament.name}</h4>
-          <h2 class="game" >${event.homeTeam.name} : ${event.awayTeam.name}</h2>
-          <div class="time" >${formatTimestamp(event.startTimestamp)}</div>
-          <button class="start_match">watch</button>
-        </div>`
-    });    
-
-
+    return data
   } catch (error) {
     console.error('Chyba:', error);
   }
 }
 
+// add todays matches
+async function getTodaysMatches(){
+  const data = await fetchInfo(`${endpoints.matches_by_date.url}${endpoints.matches_by_date.GetDate()}`)
+
+  data.events.forEach(event => {
+    matches.innerHTML += `
+      <div id="match_${event.homeTeam.gender}" class="match">
+        <h4 class="legue" >${event.tournament.name}</h4>
+        <h2 class="game" >${event.homeTeam.name} : ${event.awayTeam.name}</h2>
+        <div class="time" >${formatTimestamp(event.startTimestamp)}</div>
+        <button class="start_match" onclick="showMatch('${event.homeTeam.name}', '${event.awayTeam.name}', 0, 0)">watch</button>
+      </div>`
+  });
+}
+
+// show match on scoreboard
+function showMatch(homeName, awayName, homeScore, awayScore){
+  document.getElementById('home-name-display').textContent = homeName;
+  document.getElementById('away-name-display').textContent = awayName;
+  document.getElementById('home-score').textContent = homeScore;
+  document.getElementById('away-score').textContent = awayScore;
+  ShowContent(1);
+}
 // time in CZ
 function formatTimestamp(timestamp) {
   if (typeof timestamp !== "number") {
@@ -84,6 +97,8 @@ async function ShowContent(num){
 }
 
 
-// add todays matches
-fetchInfo(`${endpoints.matches_by_date.url}${endpoints.matches_by_date.GetDate()}`)
+//start 
+getTodaysMatches()
+
+
 
