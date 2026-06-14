@@ -40,25 +40,49 @@ async function fetchInfo(endpoint) {
 
 // add todays matches
 async function getTodaysMatches(){
-  const data = await fetchInfo(`${endpoints.matches_by_date.url}${endpoints.matches_by_date.GetDate()}`)
+  const data = await fetchInfo(endpoints.live_matches)
 
   data.events.forEach(event => {
+    const score = event.lastPeriod
+
     matches.innerHTML += `
       <div id="match_${event.homeTeam.gender}" class="match">
         <h4 class="legue" >${event.tournament.name}</h4>
         <h2 class="game" >${event.homeTeam.name} : ${event.awayTeam.name}</h2>
         <div class="time" >${formatTimestamp(event.startTimestamp)}</div>
-        <button class="start_match" onclick="showMatch('${event.homeTeam.name}', '${event.awayTeam.name}', 0, 0)">watch</button>
+        <button class="start_match" onclick="showMatch('${event.homeTeam.name}', '${event.awayTeam.name}', ${event.homeScore[event.lastPeriod]}, ${event.awayScore[event.lastPeriod]}, ${event.status.code})">watch</button>
       </div>`
   });
 }
 
 // show match on scoreboard
-function showMatch(homeName, awayName, homeScore, awayScore){
-  document.getElementById('home-name-display').textContent = homeName;
-  document.getElementById('away-name-display').textContent = awayName;
-  document.getElementById('home-score').textContent = homeScore;
-  document.getElementById('away-score').textContent = awayScore;
+function showMatch(homeName, awayName, homeScore, awayScore, status){
+  const scoreboard = document.querySelector(".scoreboard")
+
+  scoreboard.innerHTML = '';
+  scoreboard.innerHTML += `
+    <div class="scoreboard__topline">
+        <p class="live-badge" ${status == 0 || status == 100 ? 'style="display: none"' : 'style="display: inline-flex"'}>LIVE</p>
+        <p class="time" id="current-time">--:--:--</p>
+    </div>
+
+    <h1 id="scoreboard-title">Score dashboard</h1>
+
+    <div class="main_scoring" aria-live="polite">
+        <article class="team-panel">
+          <h4 class="name_home" id="home-name-display">${homeName}</h4>
+          <h1 class="score_home" id="home-score">${homeScore}</h1>
+        </article>
+
+        <h3 class="team-panel" id="divided" aria-hidden="true">:</h3>
+
+        <article class="team-panel">
+            <h4 class="name_away" id="away-name-display">${awayName}</h4>
+            <h1 class="score_away" id="away-score">${awayScore}</h1>
+        </article>
+    </div>
+  `
+
   ShowContent(1);
 }
 // time in CZ
@@ -99,6 +123,5 @@ async function ShowContent(num){
 
 //start 
 getTodaysMatches()
-
 
 

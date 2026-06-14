@@ -140,8 +140,11 @@ button {
     position: relative;
 }
 
+
+
 .scoreboard__topline,
 .section-header {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -150,6 +153,9 @@ button {
 
 .live-badge {
     display: inline-flex;
+    position: absolute;
+    top: 5px;
+    left: 5px;
     align-items: center;
     gap: 9px;
     margin: 0;
@@ -193,6 +199,10 @@ h2,
 h4,
 p {
     margin-top: 0;
+}
+
+.scoreboard-title{
+    font-size: small;
 }
 
 h1 {
@@ -353,7 +363,7 @@ h1 {
 .time {
     display: block;
     position: absolute;
-    top: 8px;
+    top: 2px;
     right: 25px;
     justify-self: end;
     min-width: 152px;
@@ -393,6 +403,12 @@ h1 {
     outline: 2px solid rgba(163, 230, 53, 0.5);
     outline-offset: 3px;
     transform: translateY(-1px);
+}
+
+.scoreboard__topline .time {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 @media (max-width: 760px) {
