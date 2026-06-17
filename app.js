@@ -28,41 +28,97 @@ const endpoints = {
 async function fetchInfo(endpoint) {
   try {
     const response = await fetch(`https://${API_HOST}${endpoint}`, options);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
-
-    console.log(data);
-
-    return data
+    console.log(data)
+    return data;
   } catch (error) {
     console.error('Chyba:', error);
+    return null;
   }
 }
 
+function getScoreValue(scoreObj, fallback = 0) {
+  if (!scoreObj || typeof scoreObj !== 'object') return fallback;
+  return scoreObj.display ?? scoreObj.current ?? fallback;
+}
+
+function createMatchCard(event, isLive = false) {
+  const container = document.createElement('div');
+  container.className = 'match';
+  container.id = `match_${event.homeTeam?.gender || 'unknown'}`;
+
+  const league = document.createElement('h4');
+  league.className = 'legue';
+  league.textContent = event.tournament?.name || 'Match';
+
+  const game = document.createElement('h2');
+  game.className = 'game';
+  game.textContent = `${event.homeTeam?.name || 'Unknown'} : ${event.awayTeam?.name || 'Unknown'}`;
+
+  const time = document.createElement('div');
+  time.className = 'time';
+  time.textContent = formatTimestamp(event.startTimestamp);
+
+  const button = document.createElement('button');
+  button.className = 'start_match';
+  button.type = 'button';
+  button.textContent = 'watch';
+  button.addEventListener('click', () => {
+    const homeName = event.homeTeam?.name || 'Unknown';
+    const awayName = event.awayTeam?.name || 'Unknown';
+    const homeScore = getScoreValue(event.homeScore);
+    const awayScore = getScoreValue(event.awayScore);
+    const statusCode = event.status?.code ?? 0;
+
+    showMatch(homeName, awayName, homeScore, awayScore, statusCode);
+  });
+
+  container.append(league, game, time, button);
+  return container;
+}
+
 // add todays matches
-async function getTodaysMatches(){
-  const data = await fetchInfo(endpoints.live_matches)
+async function getTodaysMatches() {
+  const data = await fetchInfo(`${endpoints.matches_by_date.url}${endpoints.matches_by_date.GetDate()}`);
+  const matches = document.getElementById('matches');
+
+  if (!data?.events || !matches) return;
+
+  matches.innerHTML = '';
 
   data.events.forEach(event => {
-    const score = event.lastPeriod
+    matches.appendChild(createMatchCard(event));
+  });
+}
 
-    matches.innerHTML += `
-      <div id="match_${event.homeTeam.gender}" class="match">
-        <h4 class="legue" >${event.tournament.name}</h4>
-        <h2 class="game" >${event.homeTeam.name} : ${event.awayTeam.name}</h2>
-        <div class="time" >${formatTimestamp(event.startTimestamp)}</div>
-        <button class="start_match" onclick="showMatch('${event.homeTeam.name}', '${event.awayTeam.name}', ${event.homeScore[event.lastPeriod]}, ${event.awayScore[event.lastPeriod]}, ${event.status.code})">watch</button>
-      </div>`
+// add live matches
+async function getLiveMatches() {
+  const data = await fetchInfo(endpoints.live_matches);
+  const live_matches = document.getElementById('live_matches');
+
+  if (!data?.events || !live_matches) return;
+
+  live_matches.innerHTML = '';
+
+  data.events.forEach(event => {
+    live_matches.appendChild(createMatchCard(event, true));
   });
 }
 
 // show match on scoreboard
-function showMatch(homeName, awayName, homeScore, awayScore, status){
-  const scoreboard = document.querySelector(".scoreboard")
+function showMatch(homeName, awayName, homeScore, awayScore, status) {
+  const scoreboard = document.querySelector('.scoreboard');
 
-  scoreboard.innerHTML = '';
-  scoreboard.innerHTML += `
+  if (!scoreboard) return;
+
+  scoreboard.innerHTML = `
     <div class="scoreboard__topline">
-        <p class="live-badge" ${status == 0 || status == 100 ? 'style="display: none"' : 'style="display: inline-flex"'}>LIVE</p>
+        <p class="live-badge" style="display: ${status === 0 || status === 100 ? 'none' : 'inline-flex'}">LIVE</p>
         <p class="time" id="current-time">--:--:--</p>
     </div>
 
@@ -81,7 +137,7 @@ function showMatch(homeName, awayName, homeScore, awayScore, status){
             <h1 class="score_away" id="away-score">${awayScore}</h1>
         </article>
     </div>
-  `
+  `;
 
   ShowContent(1);
 }
@@ -102,26 +158,37 @@ function formatTimestamp(timestamp) {
 }
 
 // switching sides
-async function ShowContent(num){
-  const matches = document.getElementById("matches");
+function ShowContent(num) {
+  const matchesSection = document.getElementById('matches');
+  const liveMatchesSection = document.getElementById('live_matches');
+  const scoreboardSection = document.querySelector('.scoreboard');
 
-  switch(true){
-    case num == 1:
-      document.querySelector(".matches").style.display = "none"
-      document.querySelector(".scoreboard").style.display = "block"
-      break
+  if (!matchesSection || !liveMatchesSection || !scoreboardSection) return;
 
+  switch (num) {
+    case 1:
+      matchesSection.style.display = 'none';
+      scoreboardSection.style.display = 'block';
+      liveMatchesSection.style.display = 'none';
+      break;
+    case 2:
+      matchesSection.style.display = 'none';
+      scoreboardSection.style.display = 'none';
+      liveMatchesSection.style.display = 'block';
+      break;
+    case 0:
     default:
-      document.querySelector(".matches").style.display = "block";
-      document.querySelector(".scoreboard").style.display = "none";   
-      break
-    
+      matchesSection.style.display = 'block';
+      scoreboardSection.style.display = 'none';
+      liveMatchesSection.style.display = 'none';
+      break;
   }
-    
 }
 
 
 //start 
-getTodaysMatches()
+getTodaysMatches();
+getLiveMatches();
+ShowContent(0);
 
 
