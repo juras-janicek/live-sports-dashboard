@@ -47,7 +47,7 @@ function getScoreValue(scoreObj, fallback = 0) {
   return scoreObj.display ?? scoreObj.current ?? fallback;
 }
 
-function createMatchCard(event, isLive = false) {
+function createMatchCard(event) {
   const container = document.createElement('div');
   container.className = 'match';
   container.id = `match_${event.homeTeam?.gender || 'unknown'}`;
@@ -68,15 +68,32 @@ function createMatchCard(event, isLive = false) {
   button.className = 'start_match';
   button.type = 'button';
   button.textContent = 'watch';
-  button.addEventListener('click', () => {
-    const homeName = event.homeTeam?.name || 'Unknown';
-    const awayName = event.awayTeam?.name || 'Unknown';
-    const homeScore = getScoreValue(event.homeScore);
-    const awayScore = getScoreValue(event.awayScore);
-    const statusCode = event.status?.code ?? 0;
 
-    showMatch(homeName, awayName, homeScore, awayScore, statusCode);
-  });
+  if(event.status.code == 0 || event.status.code == 100){
+      button.addEventListener('click', () => {
+      const homeName = event.homeTeam?.name || 'Unknown';
+      const awayName = event.awayTeam?.name || 'Unknown';
+      const homeScore = getScoreValue(event.homeScore);
+      const awayScore = getScoreValue(event.awayScore);
+      const statusCode = event.status?.code ?? 0;
+      const time = event.status.code == 100 ? 'ended' : 'not start yet';
+
+
+      showMatch(homeName, awayName, homeScore, awayScore, statusCode, time);
+      });
+  }else{
+      button.addEventListener('click', () => {
+      const homeName = event.homeTeam?.name || 'Unknown';
+      const awayName = event.awayTeam?.name || 'Unknown';
+      const homeScore = event.homeScore[event.lastPeriod];
+      const awayScore = event.awayScore[event.lastPeriod];
+      const statusCode = event.status?.code ?? 0;
+      const time = formatTimestamp(event.changes.changeTimestamp);
+
+      showMatch(homeName, awayName, homeScore, awayScore, statusCode, time)
+      });    
+  }
+
 
   container.append(league, game, time, button);
   return container;
@@ -111,7 +128,7 @@ async function getLiveMatches() {
 }
 
 // show match on scoreboard
-function showMatch(homeName, awayName, homeScore, awayScore, status) {
+function showMatch(homeName, awayName, homeScore, awayScore, status, time) {
   const scoreboard = document.querySelector('.scoreboard');
 
   if (!scoreboard) return;
@@ -119,7 +136,7 @@ function showMatch(homeName, awayName, homeScore, awayScore, status) {
   scoreboard.innerHTML = `
     <div class="scoreboard__topline">
         <p class="live-badge" style="display: ${status === 0 || status === 100 ? 'none' : 'inline-flex'}">LIVE</p>
-        <p class="time" id="current-time">--:--:--</p>
+        <p class="time" id="current-time">${time}</p>
     </div>
 
     <h1 id="scoreboard-title">Score dashboard</h1>
