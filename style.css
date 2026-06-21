@@ -148,14 +148,13 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .live-badge {
     display: inline-flex;
-    position: absolute;
-    top: 5px;
-    left: 5px;
+    position: static;
     align-items: center;
     gap: 9px;
     margin: 0;
@@ -186,6 +185,10 @@ button {
 }
 
 .scoreboard .time {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 8px 12px;
     border: 1px solid rgba(6, 182, 212, 0.26);
     border-radius: 999px;
@@ -293,12 +296,12 @@ h1 {
 .match {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(160px, 0.34fr) minmax(0, 1fr) minmax(160px, 0.22fr) 116px;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 16px;
+    gap: 12px 16px;
     min-height: 104px;
     margin-bottom: 14px;
-    padding: 20px 22px;
+    padding: 20px 22px 20px;
     overflow: hidden;
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -343,17 +346,30 @@ h1 {
     content: "";
 }
 
+.match-meta {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    min-width: 0;
+    max-width: calc(100% - 12px);
+}
+
 .legue {
-    margin-top: 20;
+    margin: 0;
     color: var(--highlight);
     font-size: 0.82rem;
     font-weight: 900;
     letter-spacing: 0;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .game {
-    margin: 14px;
+    margin: 26px 0 0;
     color: var(--text);
     font-size: clamp(1.25rem, 2.4vw, 2.05rem);
     line-height: 1.15;
@@ -361,23 +377,20 @@ h1 {
 }
 
 .time {
-    display: block;
-    position: absolute;
-    top: 2px;
-    right: 25px;
-    justify-self: end;
-    min-width: 152px;
-    padding: 10px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 132px;
+    padding: 6px 9px;
     border: 1px solid rgba(6, 182, 212, 0.32);
     border-radius: 999px;
     background: rgba(6, 182, 212, 0.08);
     color: #d7fbff;
-    font-size: 0.86rem;
+    font-size: 0.76rem;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1;
     text-align: center;
     white-space: nowrap;
-   
 }
 
 .start_match {
@@ -406,9 +419,8 @@ h1 {
 }
 
 .scoreboard__topline .time {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: static;
+  margin-left: auto;
 }
 
 @media (max-width: 760px) {
@@ -448,13 +460,26 @@ h1 {
 
     .match {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 10px;
     }
 
-    .tome {
-        justify-self: start;
+    .match-meta {
+        position: static;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-bottom: 6px;
+    }
+
+    .time {
+        width: 100%;
         min-width: 0;
         white-space: normal;
+    }
+
+    .game {
+        width: 100%;
+        margin-top: 0;
     }
 
     .start_match {

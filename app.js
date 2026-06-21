@@ -52,17 +52,22 @@ function createMatchCard(event) {
   container.className = 'match';
   container.id = `match_${event.homeTeam?.gender || 'unknown'}`;
 
+  const meta = document.createElement('div');
+  meta.className = 'match-meta';
+
   const league = document.createElement('h4');
   league.className = 'legue';
   league.textContent = event.tournament?.name || 'Match';
 
-  const game = document.createElement('h2');
-  game.className = 'game';
-  game.textContent = `${event.homeTeam?.name || 'Unknown'} : ${event.awayTeam?.name || 'Unknown'}`;
-
   const time = document.createElement('div');
   time.className = 'time';
   time.textContent = formatTimestamp(event.startTimestamp);
+
+  meta.append(league, time);
+
+  const game = document.createElement('h2');
+  game.className = 'game';
+  game.textContent = `${event.homeTeam?.name || 'Unknown'} : ${event.awayTeam?.name || 'Unknown'}`;
 
   const button = document.createElement('button');
   button.className = 'start_match';
@@ -95,7 +100,7 @@ function createMatchCard(event) {
   }
 
 
-  container.append(league, game, time, button);
+  container.append(meta, game, button);
   return container;
 }
 
