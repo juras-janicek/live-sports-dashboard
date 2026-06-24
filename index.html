@@ -9,10 +9,10 @@
 <body>
     <main class="container">
 
-        <nav class="navigation" >
-            <div><button onclick= ShowContent(0) >todays matches</button></div>
-            <div><button onclick= ShowContent(1) >live score board</button></div>    
-            <div><button onclick= ShowContent(2) >live matches</button></div>    
+        <nav class="navigation">
+            <div><button type="button" class="nav-btn" data-target="0">todays matches</button></div>
+            <div><button type="button" class="nav-btn" data-target="1">live score board</button></div>
+            <div><button type="button" class="nav-btn" data-target="2">live matches</button></div>
         </nav>
 
         <section class="matches" id="matches" aria-labelledby="scoreboard-title">
@@ -48,6 +48,6 @@
 
     </main>
 
-    <script src="app.js"></script>
+    <script src="app.js" type="module"></script>
 </body>
 </html>

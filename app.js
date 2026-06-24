@@ -1,7 +1,9 @@
 
 // fetch api from volleyballapi and get data by endpoint 
-const API_KEY = '66ec0d1e4bmsh3643c7487adb1cbp1a7cd5jsnf7e1b531f6e2';
-const API_HOST = 'volleyballapi.p.rapidapi.com';
+
+const API_KEY = import.meta.env.VITE_API_KEY;
+const API_HOST = import.meta.env.VITE_API_HOST;
+
 
 const options = {
   method: 'GET',
@@ -104,12 +106,27 @@ function createMatchCard(event) {
   return container;
 }
 
+function showEmptyState(container, message = 'There is not any matches') {
+  container.innerHTML = '';
+
+  const emptyMessage = document.createElement('p');
+  emptyMessage.className = 'empty-state';
+  emptyMessage.textContent = message;
+
+  container.appendChild(emptyMessage);
+}
+
 // add todays matches
 async function getTodaysMatches() {
   const data = await fetchInfo(`${endpoints.matches_by_date.url}${endpoints.matches_by_date.GetDate()}`);
   const matches = document.getElementById('matches');
 
-  if (!data?.events || !matches) return;
+  if (!matches) return;
+
+  if (!data?.events || data.events.length === 0) {
+    showEmptyState(matches);
+    return;
+  }
 
   matches.innerHTML = '';
 
@@ -123,7 +140,12 @@ async function getLiveMatches() {
   const data = await fetchInfo(endpoints.live_matches);
   const live_matches = document.getElementById('live_matches');
 
-  if (!data?.events || !live_matches) return;
+  if (!live_matches) return;
+
+  if (!data?.events || data.events.length === 0) {
+    showEmptyState(live_matches);
+    return;
+  }
 
   live_matches.innerHTML = '';
 
@@ -161,7 +183,7 @@ function showMatch(homeName, awayName, homeScore, awayScore, status, time) {
     </div>
   `;
 
-  ShowContent(1);
+  showContent(1);
 }
 // time in CZ
 function formatTimestamp(timestamp) {
@@ -180,7 +202,7 @@ function formatTimestamp(timestamp) {
 }
 
 // switching sides
-function ShowContent(num) {
+function showContent(num) {
   const matchesSection = document.getElementById('matches');
   const liveMatchesSection = document.getElementById('live_matches');
   const scoreboardSection = document.querySelector('.scoreboard');
@@ -207,10 +229,25 @@ function ShowContent(num) {
   }
 }
 
+window.showContent = showContent;
+window.ShowContent = showContent;
+
+function initNavigation() {
+  document.querySelectorAll('.nav-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      const target = Number(button.dataset.target ?? 0);
+      showContent(target);
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initNavigation();
+});
 
 //start 
 getTodaysMatches();
 getLiveMatches();
-ShowContent(0);
+showContent(0);
 
 
